@@ -7,8 +7,13 @@ set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/scripts/buildsystems/
 
 find_package(glfw3 CONFIG REQUIRED)
 find_package(glad CONFIG REQUIRED)
+find_package(glm CONFIG REQUIRED)
 
 link_libraries(glfw)
 link_libraries(glad::glad)
+link_libraries(glm::glm)
 
-add_executable(learnOpenGL main.cpp)
+file(GLOB_RECURSE SOURCE_FILES ${CMAKE_SOURCE_DIR}/src/*.cpp)
+file(GLOB_RECURSE HEADER_FILES ${CMAKE_SOURCE_DIR}/src/*.h)
+
+add_executable(learnOpenGL ${SOURCE_FILES} ${HEADER_FILES})
