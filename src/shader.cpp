@@ -3,7 +3,7 @@
 //
 #include "shader.h"
 
-Shader::Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath = nullptr) {
+Shader::Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath) {
     std::string vertexCode;
     std::string fragmentCode;
     std::string geometryCode;
@@ -82,7 +82,7 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath, const char* geo
         glDeleteShader(geometry);
 }
 
-Shader::use() {
+void Shader::use() {
     glUseProgram(ID);
 }
 
