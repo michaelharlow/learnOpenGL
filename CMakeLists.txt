@@ -23,4 +23,4 @@ file(COPY ${CMAKE_SOURCE_DIR}/resources/ DESTINATION ${CMAKE_BINARY_DIR}/resourc
 file(GLOB_RECURSE SOURCE_FILES ${CMAKE_SOURCE_DIR}/src/*.cpp)
 file(GLOB_RECURSE HEADER_FILES ${CMAKE_SOURCE_DIR}/src/*.h)
 
-add_executable(learnOpenGL ${SOURCE_FILES} ${HEADER_FILES})
+add_executable(learnOpenGL ${SOURCE_FILES} ${HEADER_FILES} src/gfx.h src/components.h)
