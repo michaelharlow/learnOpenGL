@@ -13,6 +13,7 @@
 #include "vao.h"
 #include "vbo.h"
 #include "CubeSphere.h"
+#include "components.h"
 
 void processInput(GLFWwindow *window);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -172,10 +173,10 @@ int main()
     std::uniform_int_distribution<int> distribution(-20, 20);
     std::uniform_int_distribution<int> colorDistribution(1, 100);
 
-    glm::vec3 locations[2000];
-    glm::vec3 colors[2000];
+    glm::vec3 locations[10000];
+    glm::vec3 colors[10000];
 
-    for (int location = 0; location < 2000; ++location) {
+    for (int location = 0; location < 10000; ++location) {
         locations[location] = glm::vec3(distribution(defaultRandomEngine), distribution(defaultRandomEngine), distribution(defaultRandomEngine));
         //colors[location] = glm::vec3(colorDistribution(defaultRandomEngine) * 0.01f, colorDistribution(defaultRandomEngine) * 0.01f, colorDistribution(defaultRandomEngine) * 0.01f);
         colors[location] = glm::vec3(colorDistribution(defaultRandomEngine) * 0.01f, 0.0f, colorDistribution(defaultRandomEngine) * 0.01f);
@@ -188,7 +189,7 @@ int main()
     Plane plane(6, glm::vec3(0, 0, 1));
     plane.constructMesh(0);
 
-    CubeSphere cubeSphere(8);
+    CubeSphere cubeSphere(3);
     cubeSphere.constructMesh();
 
     //std::size_t size = plane.getMesh().vertices.size() * sizeof(float);
@@ -244,6 +245,15 @@ int main()
     skyboxShader.use();
     skyboxShader.setInt("skybox", 0);
 
+    Scene scene;
+
+    struct Transform {
+        float x, y, z;
+    };
+
+    EntityID object = scene.newEntity();
+    scene.assign<Transform>(object);
+
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
@@ -252,6 +262,12 @@ int main()
         lastFrame = currentFrame;
 
         processInput(window);
+
+        for (EntityID entity = 0; entity < 1; entity++) {
+            Transform* pTransform = scene.get<Transform>(entity);
+
+            pTransform->x += 0.1;
+        }
 
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
@@ -302,9 +318,10 @@ int main()
 
         ImGui::Begin("balls");
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+        ImGui::Text("Transform x: %f", scene.get<Transform>(0)->x);
         //ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Camera fov: %i", sizeof(plane.getMesh().vertices));
         ImGui::InputFloat("Fov", &camera.fov, 1.0f, 1.0f, "%.3f");
-        ImGui::SliderInt("spheres", &numberOfSpheres, 1, 2000);
+        ImGui::SliderInt("spheres", &numberOfSpheres, 1, 10000);
         if (ImGui::Button("wire")) {
             ///uses wireframe mode
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -314,7 +331,7 @@ int main()
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         }
         if (ImGui::Button("Re-Roll")) {
-            for (int location = 0; location < 2000; ++location) {
+            for (int location = 0; location < 10000; ++location) {
                 locations[location] = glm::vec3(distribution(defaultRandomEngine), distribution(defaultRandomEngine), distribution(defaultRandomEngine));
             }
         }
